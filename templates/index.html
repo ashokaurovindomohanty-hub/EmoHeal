@@ -3,6 +3,7 @@
 <head>
   <title>EmoHeal</title>
   <link rel="stylesheet" href="/static/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
@@ -10,7 +11,9 @@
     <textarea id="text" placeholder="How are you feeling today?"></textarea>
     <button onclick="detect()">Detect Emotion</button>
     <p id="result"></p>
-  </div>
+  <div id="history" style="margin-top:20px;color:white;"></div>
+<canvas id="emoChart" height="120"></canvas>
+</div>
   <script src="/static/js/script.js"></script>
 </body>
 </html>
