@@ -46,7 +46,7 @@ function renderChart(){
   });
 }
 let lastDetectedEmotion = localStorage.getItem('lastEmotion') || 'Neutral';
-function new Date().toLocaleString(){
+function saveJournal(){
  let text = document.getElementById('journalText').value.trim();
  if(!text) return alert("Write something first!");
  let entry = { date: new Date().toLocaleDateString(), text, emotion: lastDetectedEmotion };
