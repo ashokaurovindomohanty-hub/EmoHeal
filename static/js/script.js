@@ -45,16 +45,19 @@ function renderChart(){
     options: { plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,ticks:{stepSize:1}}} }
   });
 }
+let lastDetectedEmotion = localStorage.getItem('lastEmotion') || 'Neutral';
 function saveJournal(){
- let text = document.getElementById('journalText').value;
+ let text = document.getElementById('journalText').value.trim();
+ if(!text) return alert("Write something first!");
  let entry = { date: new Date().toLocaleDateString(), text, emotion: lastDetectedEmotion };
  let history = JSON.parse(localStorage.getItem('journal')||'[]');
  history.push(entry);
  localStorage.setItem('journal', JSON.stringify(history));
+ document.getElementById('journalText').value = "";
  showHistory();
 }
 function showHistory(){
  let history = JSON.parse(localStorage.getItem('journal')||'[]');
  document.getElementById('journalHistory').innerHTML = history.map(e=> `<p><b>${e.date} - ${e.emotion}:</b> ${e.text}</p>`).join('');
 }
-showHistory();
+
