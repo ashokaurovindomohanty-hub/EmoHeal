@@ -46,7 +46,7 @@ function renderChart(){
   });
 }
 let lastDetectedEmotion = localStorage.getItem('lastEmotion') || 'Neutral';
-function saveJournal(){
+function new Date().toLocaleString(){
  let text = document.getElementById('journalText').value.trim();
  if(!text) return alert("Write something first!");
  let entry = { date: new Date().toLocaleDateString(), text, emotion: lastDetectedEmotion };
@@ -57,7 +57,16 @@ function saveJournal(){
  showHistory();
 }
 function showHistory(){
- let history = JSON.parse(localStorage.getItem('journal')||'[]');
- document.getElementById('journalHistory').innerHTML = history.map(e=> `<p><b>${e.date} - ${e.emotion}:</b> ${e.text}</p>`).join('');
+ let h=JSON.parse(localStorage.getItem('journal')||'[]');
+ document.getElementById('journalHistory').innerHTML=h.map((e,i)=>`
+  <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display=='none'?'block':'none'">
+  <b>${e.date}</b> - ${e.emotion}</div><div style="display:none">${e.text}</div>`).join('');
 }
-
+function dayResult(){
+ let hist=JSON.parse(localStorage.getItem('journal')||'[]');
+ let today=new Date().toLocaleDateString();
+ let t=hist.filter(h=>h.date.includes(today));
+ let c={}; t.forEach(h=>c[h.emotion]=(c[h.emotion]||0)+1);
+ let top=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||'Neutral';
+ document.getElementById('dayResult').innerText=`Today: ${top}`;
+}
