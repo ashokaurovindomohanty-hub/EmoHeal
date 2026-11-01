@@ -46,16 +46,15 @@ function renderChart(){
   });
 }
 function saveJournal(){
- let text = document.getElementById('journalText').value.trim();
- if(!text) return alert("Write something!");
- let entry = { date: new Date().toLocaleString(), text, emotion: lastDetectedEmotion || 'Neutral' };
- let hist = JSON.parse(localStorage.getItem('journal')||'[]');
- hist.push(entry);
- localStorage.setItem('journal', JSON.stringify(hist));
- document.getElementById('journalText').value="";
- showHistory();
- dayResult();
- happyGraph();
+ try{
+  let el=document.getElementById('journalText');
+  let text=el.value.trim(); if(!text) return alert("Write something!");
+  let hist=JSON.parse(localStorage.getItem('journal')||'[]');
+  hist.push({date:new Date().toLocaleString(), text:text, emotion: (typeof lastDetectedEmotion!=='undefined' && lastDetectedEmotion) ? lastDetectedEmotion : 'Neutral'});
+  localStorage.setItem('journal', JSON.stringify(hist));
+  el.value="";
+  showHistory(); dayResult(); happyGraph();
+ }catch(e){ alert("Save error: "+e.message); }
 }
 function showHistory(){
  let hist=JSON.parse(localStorage.getItem('journal')||'[]');
