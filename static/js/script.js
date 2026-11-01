@@ -55,6 +55,7 @@ function saveJournal(){
  document.getElementById('journalText').value="";
  showHistory();
  dayResult;
+ happyGraph();
 }
 function showHistory(){
  let h=JSON.parse(localStorage.getItem('journal')||'[]');
@@ -68,14 +69,13 @@ function dayResult(){
  let t=hist.filter(h=>h.date.includes(today));
  let c={}; t.forEach(h=>c[h.emotion]=(c[h.emotion]||0)+1);
  let top=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||'Neutral';
- document.getElementById('dayResult').innerText=`Today: ${top}`;
-}
-function dayResult(){
- let hist=JSON.parse(localStorage.getItem('journal')||'[]');
- let today=new Date().toLocaleDateString();
- let t=hist.filter(h=>h.date.includes(today));
- let c={}; t.forEach(h=>c[h.emotion]=(c[h.emotion]||0)+1);
- let top=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||'Neutral';
  document.getElementById('dayResult').innerText=top?`Today: ${top}`:'';
 }
 dayResult();
+function happyGraph(){
+ let hist=JSON.parse(localStorage.getItem('journal')||'[]');
+ let days={}; hist.forEach(h=>{let d=h.date.split(',')[0]; if(!days[d])days[d]={t:0,j:0}; days[d].t++; if(h.emotion==='Joy')days[d].j++;});
+ let labels=Object.keys(days).slice(-7); let vals=labels.map(d=>Math.round(days[d].j/days[d].t*100));
+ let ctx=document.getElementById('happyChart'); if(!ctx) return; if(window.hChart) window.hChart.destroy();
+ window.hChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Happy %',data:vals,borderColor:'#ff8a00',tension:0.3}]},options:{scales:{y:{beginAtZero:true,max:100}}}});
+}
