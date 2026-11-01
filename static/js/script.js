@@ -45,16 +45,16 @@ function renderChart(){
     options: { plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,ticks:{stepSize:1}}} }
   });
 }
-let lastDetectedEmotion = localStorage.getItem('lastEmotion') || 'Neutral';
 function saveJournal(){
  let text = document.getElementById('journalText').value.trim();
- if(!text) return alert("Write something first!");
- let entry = { date: new Date().toLocaleDateString(), text, emotion: lastDetectedEmotion };
- let history = JSON.parse(localStorage.getItem('journal')||'[]');
- history.push(entry);
- localStorage.setItem('journal', JSON.stringify(history));
- document.getElementById('journalText').value = "";
+ if(!text) return alert("Write something!");
+ let entry = { date: new Date().toLocaleString(), text, emotion: lastDetectedEmotion || 'Neutral' };
+ let hist = JSON.parse(localStorage.getItem('journal')||'[]');
+ hist.push(entry);
+ localStorage.setItem('journal', JSON.stringify(hist));
+ document.getElementById('journalText').value="";
  showHistory();
+ if(typeof dayResult === 'function') dayResult();
 }
 function showHistory(){
  let h=JSON.parse(localStorage.getItem('journal')||'[]');
@@ -70,3 +70,4 @@ function dayResult(){
  let top=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||'Neutral';
  document.getElementById('dayResult').innerText=`Today: ${top}`;
 }
+
