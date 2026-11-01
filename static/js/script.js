@@ -54,7 +54,7 @@ function saveJournal(){
  localStorage.setItem('journal', JSON.stringify(hist));
  document.getElementById('journalText').value="";
  showHistory();
- dayResult;
+ dayResult();
  happyGraph();
 }
 function showHistory(){
