@@ -54,7 +54,8 @@ function saveJournal(){
  localStorage.setItem('journal', JSON.stringify(hist));
  document.getElementById('journalText').value="";
  showHistory();
- if(typeof dayResult === 'function') dayResult();
+ dayResult;
+ happyGraph();
 }
 function showHistory(){
  let h=JSON.parse(localStorage.getItem('journal')||'[]');
@@ -70,4 +71,12 @@ function dayResult(){
  let top=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||'Neutral';
  document.getElementById('dayResult').innerText=`Today: ${top}`;
 }
-
+function dayResult(){
+ let hist=JSON.parse(localStorage.getItem('journal')||'[]');
+ let today=new Date().toLocaleDateString();
+ let t=hist.filter(h=>h.date.includes(today));
+ let c={}; t.forEach(h=>c[h.emotion]=(c[h.emotion]||0)+1);
+ let top=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||'Neutral';
+ document.getElementById('dayResult').innerText=top?`Today: ${top}`:'';
+}
+dayResult();
