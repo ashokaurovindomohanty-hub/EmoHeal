@@ -54,8 +54,7 @@ function saveJournal(){
  localStorage.setItem('journal', JSON.stringify(hist));
  document.getElementById('journalText').value="";
  showHistory();
- dayResult;
- happyGraph();
+ dayResult(); happyGraph();
 }
 function showHistory(){
  let h=JSON.parse(localStorage.getItem('journal')||'[]');
@@ -73,9 +72,13 @@ function dayResult(){
 }
 dayResult();
 function happyGraph(){
- let hist=JSON.parse(localStorage.getItem('journal')||'[]');
- let days={}; hist.forEach(h=>{let d=h.date.split(',')[0]; if(!days[d])days[d]={t:0,j:0}; days[d].t++; if(h.emotion==='Joy')days[d].j++;});
- let labels=Object.keys(days).slice(-7); let vals=labels.map(d=>Math.round(days[d].j/days[d].t*100));
- let ctx=document.getElementById('happyChart'); if(!ctx) return; if(window.hChart) window.hChart.destroy();
- window.hChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Happy %',data:vals,borderColor:'#ff8a00',tension:0.3}]},options:{scales:{y:{beginAtZero:true,max:100}}}});
+ try{
+  let hist=JSON.parse(localStorage.getItem('journal')||'[]');
+  let ctx=document.getElementById('happyChart'); if(!ctx) return;
+  if(!hist.length) return;
+  let days={}; hist.forEach(h=>{let d=h.date.split(',')[0]; if(!days[d])days[d]={t:0,j:0}; days[d].t++; if(h.emotion==='Joy')days[d].j++;});
+  let labels=Object.keys(days).slice(-7); let vals=labels.map(d=>Math.round(days[d].j/days[d].t*100));
+  if(window.hChart) window.hChart.destroy();
+  window.hChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Happy %',data:vals,borderColor:'#ff8a00',tension:0.3}]},options:{scales:{y:{beginAtZero:true,max:100}}}});
+ }catch(e){console.log(e)}
 }
