@@ -58,18 +58,17 @@ function saveJournal(){
  happyGraph();
 }
 function showHistory(){
- let h=JSON.parse(localStorage.getItem('journal')||'[]');
- document.getElementById('journalHistory').innerHTML=h.map((e,i)=>`
-  <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display=='none'?'block':'none'">
-  <b>${e.date}</b> - ${e.emotion}</div><div style="display:none">${e.text}</div>`).join('');
-}
-function dayResult(){
  let hist=JSON.parse(localStorage.getItem('journal')||'[]');
- let today=new Date().toLocaleDateString();
- let t=hist.filter(h=>h.date.includes(today));
- let c={}; t.forEach(h=>c[h.emotion]=(c[h.emotion]||0)+1);
- let top=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]||'Neutral';
- document.getElementById('dayResult').innerText=`Today: ${top}`;
+ let box=document.getElementById('historyBox'); if(!box) return;
+ if(!hist.length){box.innerHTML="No entries yet"; return;}
+ let groups={}; hist.forEach(h=>{let d=h.date.split(',')[0]; if(!groups[d])groups[d]=[]; groups[d].push(h);});
+ let html="";
+ Object.keys(groups).reverse().forEach(d=>{
+  html+=`<div style="margin:8px 0;"><b style="cursor:pointer;color:#ff8a00" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">${d} (${groups[d].length})</b><div style="display:none;padding-left:12px;">`;
+  groups[d].forEach(e=>{html+=`<div>${e.date} - ${e.emotion}: ${e.text}</div>`});
+  html+=`</div></div>`;
+ });
+ box.innerHTML=html;
 }
 function dayResult(){
  let hist=JSON.parse(localStorage.getItem('journal')||'[]');
@@ -80,3 +79,14 @@ function dayResult(){
  document.getElementById('dayResult').innerText=top?`Today: ${top}`:'';
 }
 dayResult();
+function happyGraph(){
+ try{
+  let hist=JSON.parse(localStorage.getItem('journal')||'[]');
+  let ctx=document.getElementById('happyChart'); if(!ctx) return;
+  if(!hist.length) return;
+  let days={}; hist.forEach(h=>{let d=h.date.split(',')[0]; if(!days[d])days[d]={t:0,j:0}; days[d].t++; if(h.emotion==='Joy')days[d].j++;});
+  let labels=Object.keys(days).slice(-7); let vals=labels.map(d=>Math.round(days[d].j/days[d].t*100));
+  if(window.hChart) window.hChart.destroy();
+  window.hChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Happy %',data:vals,borderColor:'#ff8a00',tension:0.3}]},options:{scales:{y:{beginAtZero:true,max:100}}}});
+ }catch(e){console.log(e)}
+}
