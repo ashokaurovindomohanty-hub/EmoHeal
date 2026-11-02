@@ -9,3 +9,7 @@ button{background:linear-gradient(90deg,#ff8a00,#e52e71);color:white;border:none
 button:hover{transform:scale(1.05);box-shadow:0 5px 15px rgba(229,46,113,0.4)}
 #result{margin-top:20px;font-size:1.3rem;font-weight:600;min-height:30px;animation:fadeIn 0.5s}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){
+ #historyBox, #journalText, #happyChart { width:100% !important; font-size:15px; }
+ button { width:100%; margin:6px 0; padding:12px; border-radius:12px; }
+}
