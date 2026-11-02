@@ -56,18 +56,25 @@ function saveJournal(){
   showHistory(); dayResult(); happyGraph();
  }catch(e){ alert("Save error: "+e.message); }
 }
-function showHistory(){
+function showHistory(){ 
+ let hist=JSON.parse(localStorage.getItem('journal')||'[]'); 
+ let box=document.getElementById('historyBox'); if(!box) return; 
+ if(!hist.length){box.innerHTML="No entries yet"; return;} 
+ let groups={}; hist.forEach(h=>{let d=h.date.split(',')[0]; if(!groups[d])groups[d]=[]; groups[d].push(h);}); 
+ let html=""; 
+ Object.keys(groups).reverse().forEach(d=>{ 
+  html+=`<div style="margin:8px 0;"><b style="cursor:pointer;color:#ff8a00" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">${d} (${groups[d].length})</b> <button onclick="deleteDate('${d}')" style="font-size:11px;padding:2px 6px;border-radius:6px;border:1px solid #ff8a00;background:#fff;color:#ff8a00;cursor:pointer;margin-left:8px;">Clear</button><div style="display:none;padding-left:12px;">`; 
+  groups[d].forEach(e=>{html+=`<div>${e.date} - ${e.emotion}: ${e.text}</div>`}); 
+  html+=`</div></div>`; 
+ }); 
+ box.innerHTML=html; 
+}
+function deleteDate(dateStr){
+ if(!confirm("Delete all entries for "+dateStr+" ?")) return;
  let hist=JSON.parse(localStorage.getItem('journal')||'[]');
- let box=document.getElementById('historyBox'); if(!box) return;
- if(!hist.length){box.innerHTML="No entries yet"; return;}
- let groups={}; hist.forEach(h=>{let d=h.date.split(',')[0]; if(!groups[d])groups[d]=[]; groups[d].push(h);});
- let html="";
- Object.keys(groups).reverse().forEach(d=>{
-  html+=`<div style="margin:8px 0;"><b style="cursor:pointer;color:#ff8a00" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">${d} (${groups[d].length})</b><div style="display:none;padding-left:12px;">`;
-  groups[d].forEach(e=>{html+=`<div>${e.date} - ${e.emotion}: ${e.text}</div>`});
-  html+=`</div></div>`;
- });
- box.innerHTML=html;
+ hist=hist.filter(h=> !h.date.startsWith(dateStr));
+ localStorage.setItem('journal',JSON.stringify(hist));
+ showHistory(); dayResult(); happyGraph();
 }
 function dayResult(){
  let hist=JSON.parse(localStorage.getItem('journal')||'[]');
