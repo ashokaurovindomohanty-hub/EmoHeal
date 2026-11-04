@@ -1,22 +1,22 @@
 async function detect() {
   const text = document.getElementById("text").value;
-  const res = await fetch("/detect", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({text})
-  });
-  const data = JSON.parse(await res.json().then(d=> d.body || JSON.stringify(d)));
-  // fallback if direct
-  const emotion = data.emotion || data.body && JSON.parse(data.body).emotion;
-  const conf = data.confidence || "";
-  document.getElementById("result").innerText = `Emotion: ${emotion} ${conf? '('+conf*100+'%)':''}`;
-  
-  // save history
+  if(!text.trim()) return;
+  const res = await fetch("/detect", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({text}) });
+  const raw = await res.json();
+  const data = raw.body ? JSON.parse(raw.body) : raw;
+  const emotion = data.emotion || "Neutral";
+  const conf = data.confidence ? Math.round(data.confidence*100) : "";
+  document.getElementById("result").innerText = `Emotion: ${emotion} ${conf? '('+conf+'%)':''}`;
+  const tips = {Joy:"Keep shining! Share your joy.", Sadness:"Try a 5-min walk + deep breaths.", Anger:"Pause, breathe 4-4-4.", Fear:"Ground yourself: 5 things you see.", Surprise:"Embrace the new!", Love:"Express gratitude today.", Neutral:"Reflect for 2 mins."};
+  document.getElementById("coaching").innerText = tips[emotion] || tips.Neutral;
   let hist = JSON.parse(localStorage.getItem("emoHistory")||"[]");
-  hist.push({time: new Date().toLocaleTimeString(), emotion});
+  hist.push({time:new Date().toLocaleTimeString(), emotion, date:new Date().toLocaleDateString()});
   localStorage.setItem("emoHistory", JSON.stringify(hist.slice(-10)));
+  let streak = parseInt(localStorage.getItem("streak")||"0")+1;
+  localStorage.setItem("streak", streak);
+  document.getElementById("streak").innerText = "🔥 Streak: "+streak+" days";
   renderChart();
-  document.getElementById("text").value = "";
+  document.getElementById("text").value="";
 }
 function renderChart(){
   let hist = JSON.parse(localStorage.getItem("emoHistory")||"[]");
