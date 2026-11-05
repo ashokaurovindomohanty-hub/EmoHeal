@@ -15,8 +15,12 @@ async function detect() {
   let streak = parseInt(localStorage.getItem("streak")||"0")+1;
   localStorage.setItem("streak", streak);
   document.getElementById("streak").innerText = "🔥 Streak: "+streak+" days";
-  renderChart();
-  document.getElementById("text").value="";
+}
+function shareBadge(){
+  const streak = localStorage.getItem("streak")||1;
+  const text = `My EmoHeal 🔥 Streak: ${streak} days - AI Emotion Wellness! https://emoheal-omp6.onrender.com/`;
+  if(navigator.share) navigator.share({title:'EmoHeal', text});
+  else { navigator.clipboard.writeText(text); alert("Copied: "+text); }
 }
 function renderChart(){
   let hist = JSON.parse(localStorage.getItem("emoHistory")||"[]");
