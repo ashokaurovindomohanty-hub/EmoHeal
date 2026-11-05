@@ -1,3 +1,10 @@
+function login(){
+  const n=document.getElementById("userName").value.trim();
+  if(!n) return alert("Enter name");
+  localStorage.setItem("user",n);
+  document.getElementById("welcome").innerText="Welcome, "+n+" 👋";
+}
+window.onload=()=>{const u=localStorage.getItem("user"); if(u) document.getElementById("welcome").innerText="Welcome, "+u+" 👋";};
 async function detect() {
   const text = document.getElementById("text").value;
   if(!text.trim()) return;

@@ -11,6 +11,11 @@
 <body>
 <div class="container">
 <h1>EmoHeal</h1>
+<div id="authBox" style="margin:10px 0;">
+  <input id="userName" placeholder="Enter name" style="padding:8px;border-radius:20px;border:none;text-align:center;">
+  <button onclick="login()" style="padding:8px 16px;">Login</button>
+  <p id="welcome" style="margin-top:8px;font-weight:600;"></p>
+</div>
 <textarea id="text" placeholder="How are you feeling today?"></textarea>
 <button onclick="detect()">Detect Emotion</button>
 <p id="result"></p>
