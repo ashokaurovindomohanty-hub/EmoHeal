@@ -4,6 +4,9 @@ function login(){
   localStorage.setItem("user",n);
   document.getElementById("welcome").innerText="Welcome, "+n+" 👋";
 }
+let hits = parseInt(localStorage.getItem("hits")||0)+1;
+localStorage.setItem("hits",hits);
+console.log("Visits:",hits);
 window.onload=()=>{const u=localStorage.getItem("user"); if(u) document.getElementById("welcome").innerText="Welcome, "+u+" 👋";};
 async function detect() {
   const text = document.getElementById("text").value;
