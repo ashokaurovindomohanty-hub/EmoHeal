@@ -32,16 +32,9 @@ function shareBadge(){
   if(navigator.share) navigator.share({title:'EmoHeal', text});
   else { navigator.clipboard.writeText(text); alert("Copied: "+text); }
 }
-function renderChart(){
-  let hist = JSON.parse(localStorage.getItem("emoHistory")||"[]");
-  const div = document.getElementById("history");
-  if(!div) return;
-  div.innerHTML = "<h3>History</h3>" + hist.map(h=> `<span>${h.time}: <b>${h.emotion}</b></span>`).join("<br>");
-}
-window.onload = renderChart;
 let chart;
 function renderChart(){
-  let hist = JSON.parse(localStorage.getItem("emoHistory")||"[]");
+  let hist = JSON.parse(localStorage.getItem("journal")||"[]");
   const div = document.getElementById("history");
   if(div) div.innerHTML = "<h3>History</h3>" + hist.map(h=> `<span>${h.time}: <b>${h.emotion}</b></span>`).join("<br>");
   
@@ -59,6 +52,7 @@ function renderChart(){
     options: { plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,ticks:{stepSize:1}}} }
   });
 }
+window.onload = renderChart;
 function saveJournal(){
  try{
   let el=document.getElementById('journalText');
